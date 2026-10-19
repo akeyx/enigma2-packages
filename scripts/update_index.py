@@ -111,10 +111,11 @@ def process_directory(feed_dir: Path) -> int:
     with open(packages_file, "w", encoding="utf-8") as f:
         f.write(packages_content)
 
-    # Write Packages.gz (compressed)
+    # Write Packages.gz (deterministic compressed archive with mtime=0)
     packages_gz_file = feed_dir / "Packages.gz"
-    with gzip.open(packages_gz_file, "wb", compresslevel=9) as f:
-        f.write(packages_content.encode("utf-8"))
+    with open(packages_gz_file, "wb") as f_out:
+        with gzip.GzipFile(filename="", mode="wb", fileobj=f_out, mtime=0) as gz:
+            gz.write(packages_content.encode("utf-8"))
 
     print(f"[SUCCESS] Generated {packages_file.name} ({len(packages_content)} bytes)")
     print(f"[SUCCESS] Generated {packages_gz_file.name} ({packages_gz_file.stat().st_size} bytes)")

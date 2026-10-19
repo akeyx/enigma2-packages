@@ -4,16 +4,19 @@ on:
   push:
     paths:
       - '**/*.ipk'
+  schedule:
+    # Weekly index integrity check on Sundays at 03:00 UTC
+    - cron: '0 3 * * 0'
   workflow_dispatch:
     inputs:
-      download_url:
-        description: 'Optional URL of an .ipk file to download and index'
+      arch:
+        description: 'Target architecture folder (leave blank to re-index all)'
         required: false
         default: ''
-      arch:
-        description: 'Architecture directory (e.g. all, cortexa15hf-neon-vfpv4)'
+      download_url:
+        description: 'Optional URL of a remote .ipk file to download and index'
         required: false
-        default: 'all'
+        default: ''
   repository_dispatch:
     types: [update-feed, package-published]
 
@@ -40,6 +43,9 @@ jobs:
         if: ${{ github.event.inputs.download_url != '' }}
         run: |
           ARCH="${{ github.event.inputs.arch }}"
+          if [ -z "$ARCH" ]; then
+            ARCH="all"
+          fi
           URL="${{ github.event.inputs.download_url }}"
           mkdir -p "$ARCH"
           FILENAME=$(basename "$URL")
@@ -49,7 +55,14 @@ jobs:
 
       - name: Generate Packages and Packages.gz Index
         run: |
-          python3 scripts/update_index.py
+          ARCH="${{ github.event.inputs.arch }}"
+          if [ -n "$ARCH" ]; then
+            echo "--> Rebuilding index for architecture: $ARCH"
+            python3 scripts/update_index.py "$ARCH"
+          else
+            echo "--> Auto-discovering and rebuilding indexes for all architectures"
+            python3 scripts/update_index.py
+          fi
 
       - name: Commit and Push Updated Feed Index
         run: |
