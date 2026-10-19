@@ -1,0 +1,67 @@
+name: Remove Package from Feed
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_pattern:
+        description: 'Package filename or wildcard pattern (e.g. *1.0.0* or full filename)'
+        required: true
+      arch:
+        description: 'Architecture directory (e.g. cortexa15hf-neon-vfpv4, all, or leave empty for all)'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Dry run (preview without deleting or committing)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  remove-package:
+    name: Remove Package & Rebuild Index
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Remove Package(s) and Rebuild Index
+        run: |
+          PATTERN="${{ github.event.inputs.package_pattern }}"
+          ARCH="${{ github.event.inputs.arch }}"
+          DRY_RUN="${{ github.event.inputs.dry_run }}"
+
+          ARGS=("$PATTERN")
+          if [ -n "$ARCH" ]; then
+            ARGS+=("$ARCH")
+          fi
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS+=("--dry-run")
+          fi
+
+          chmod +x scripts/remove_package.sh
+          ./scripts/remove_package.sh "${ARGS[@]}"
+
+      - name: Commit and Push Changes
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit. Matching packages may not have existed."
+          else
+            git commit -m "chore(feed): remove package '${{ github.event.inputs.package_pattern }}' [skip ci]"
+            git push origin main
+            echo "Successfully updated feed index."
+          fi
