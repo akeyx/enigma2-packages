@@ -123,14 +123,25 @@ def process_directory(feed_dir: Path) -> int:
 
 def main():
     parser = argparse.ArgumentParser(description="Generate Enigma2 OPKG feed index (Packages / Packages.gz)")
-    parser.add_argument("directories", nargs="*", default=["all"], help="Feed directories to index (default: 'all')")
+    parser.add_argument("directories", nargs="*", default=None, help="Feed directories to index (default: auto-discover all directories containing .ipk files)")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
     total = 0
 
-    for target in args.directories:
-        target_path = repo_root / target if not Path(target).is_absolute() else Path(target)
+    if args.directories:
+        targets = [repo_root / d if not Path(d).is_absolute() else Path(d) for d in args.directories]
+    else:
+        # Auto-discover all directories in repo root that contain .ipk files
+        targets = []
+        for item in sorted(repo_root.iterdir()):
+            if item.is_dir() and not item.name.startswith(".") and item.name not in ("scripts", "build"):
+                if list(item.glob("*.ipk")):
+                    targets.append(item)
+        if not targets and (repo_root / "all").is_dir():
+            targets = [repo_root / "all"]
+
+    for target_path in targets:
         if target_path.exists() and target_path.is_dir():
             total += process_directory(target_path)
         else:

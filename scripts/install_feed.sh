@@ -8,7 +8,7 @@ set -e
 # ==============================================================================
 
 FEED_CONF="/etc/opkg/akeyx-feed.conf"
-FEED_URL="https://raw.githubusercontent.com/akeyx/enigma2-packages/main/all"
+BASE_URL="https://raw.githubusercontent.com/akeyx/enigma2-packages/main"
 
 echo "=== Installing akeyx Enigma2 Package Feed ==="
 
@@ -17,11 +17,26 @@ if [ ! -d "/etc/opkg" ]; then
     exit 1
 fi
 
-echo "--> Writing feed configuration to ${FEED_CONF}..."
+echo "--> Detecting system architecture from /etc/opkg/arch.conf..."
+ARCH_CONF="/etc/opkg/arch.conf"
+
+# Always write base 'all' feed
 cat <<EOF > "${FEED_CONF}"
-# akeyx Enigma2 Package Feed
-src/gz akeyx-packages ${FEED_URL}
+# akeyx Enigma2 Package Feed (Auto-generated)
+src/gz akeyx-all ${BASE_URL}/all
 EOF
+
+# Detect cortexa15hf-neon-vfpv4 (Vu+ 4K, Octagon SF8008, GigaBlue 4K)
+if [ -f "${ARCH_CONF}" ] && grep -q "cortexa15hf-neon-vfpv4" "${ARCH_CONF}"; then
+    echo "  + Detected ARM cortex-a15 hardware (cortexa15hf-neon-vfpv4)"
+    echo "src/gz akeyx-cortexa15hf ${BASE_URL}/cortexa15hf-neon-vfpv4" >> "${FEED_CONF}"
+elif [ -f "${ARCH_CONF}" ] && grep -q "armv7ahf-neon" "${ARCH_CONF}"; then
+    echo "  + Detected generic ARMv7 hardware (armv7ahf-neon)"
+    echo "src/gz akeyx-armv7a ${BASE_URL}/armv7ahf-neon" >> "${FEED_CONF}"
+fi
+
+echo "--> Updated ${FEED_CONF}:"
+cat "${FEED_CONF}"
 
 echo "--> Updating OPKG package cache..."
 opkg update
