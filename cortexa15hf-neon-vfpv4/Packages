@@ -6,8 +6,9 @@ Section: openatv
 Priority: optional
 Maintainer: akeyx
 Depends: python3-core, python3-cryptography, python3-requests, python3-urllib3
+Suggests: wireguard-tools, openvpn
 Source: https://github.com/akeyx/canalplus-connect
 Filename: enigma2-plugin-extensions-canalplus-connect_1.0.0-atv76_cortexa15hf-neon-vfpv4.ipk
-Size: 814066
-MD5Sum: 5078bd7cbb4ff1e34cbc894278afead8
-SHA256: 392cf4e63114ccc166dfd6fe69b1386d66b37afdf7a3d421f87a5ccfab98e824
+Size: 837862
+MD5Sum: 7e84a2c5e22493fe56178e9580e73315
+SHA256: ac41c1662f882fa93162a0c6a8b3e4d5da5dc1f511c801c985b1f1ce6e2f4028
