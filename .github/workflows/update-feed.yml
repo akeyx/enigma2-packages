@@ -1,0 +1,64 @@
+name: Update OPKG Feed Index
+
+on:
+  push:
+    paths:
+      - '**/*.ipk'
+  workflow_dispatch:
+    inputs:
+      download_url:
+        description: 'Optional URL of an .ipk file to download and index'
+        required: false
+        default: ''
+      arch:
+        description: 'Architecture directory (e.g. all, cortexa15hf-neon-vfpv4)'
+        required: false
+        default: 'all'
+  repository_dispatch:
+    types: [update-feed, package-published]
+
+permissions:
+  contents: write
+
+jobs:
+  update-feed:
+    name: Rebuild Packages & Packages.gz
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download Remote Package (if requested)
+        if: ${{ github.event.inputs.download_url != '' }}
+        run: |
+          ARCH="${{ github.event.inputs.arch }}"
+          URL="${{ github.event.inputs.download_url }}"
+          mkdir -p "$ARCH"
+          FILENAME=$(basename "$URL")
+          echo "--> Downloading $FILENAME into $ARCH/..."
+          curl -sSL -o "${ARCH}/${FILENAME}" "$URL"
+          ls -lh "${ARCH}/${FILENAME}"
+
+      - name: Generate Packages and Packages.gz Index
+        run: |
+          python3 scripts/update_index.py
+
+      - name: Commit and Push Updated Feed Index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "Feed index is already up to date. Nothing to commit."
+          else
+            git commit -m "chore(feed): rebuild Packages and Packages.gz index [skip ci]"
+            git push origin main
+          fi
