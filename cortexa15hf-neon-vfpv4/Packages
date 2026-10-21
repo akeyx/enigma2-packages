@@ -114,9 +114,9 @@ Depends: python3-core, python3-cryptography, python3-pycryptodome, python3-reque
 Suggests: wireguard-tools, openvpn, iptables
 Source: https://github.com/akeyx/canalplus-connect
 Filename: enigma2-plugin-extensions-canalplus-connect_1.2.14-atv76_cortexa15hf-neon-vfpv4.ipk
-Size: 1740734
-MD5Sum: 69611c35b188c78bab1705b577c0024b
-SHA256: 8786efbd04cb1eeaf28a218b231150d33d53e2afa91cd274fc74634b9bd0cb1a
+Size: 1740736
+MD5Sum: 3959d154d6bc7423d861b9443809d33e
+SHA256: 94a2313820ecde6b4a27cb4b75bbd9bf3b8b77f4ceaa5926fa2fd843a5d792eb
 
 Package: enigma2-plugin-extensions-canalplus-connect
 Version: 1.2.2-atv76
