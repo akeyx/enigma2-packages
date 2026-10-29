@@ -314,6 +314,21 @@ MD5Sum: bb91b2212e4427074ddcea4a8d426d74
 SHA256: 803d53bab68cb0a7b0d1098e1d7e7dc18f96479f8d8103047610c081da74fdb7
 
 Package: enigma2-plugin-extensions-canalplus-connect
+Version: 1.2.28-atv76
+Description: Canal+ Online Native Enigma2 Plugin and Streaming Gateway with Hardware DRM (OpenATV 7.x / cortexa15hf-neon-vfpv4)
+Architecture: cortexa15hf-neon-vfpv4
+Section: openatv
+Priority: optional
+Maintainer: akeyx
+Depends: python3-core, python3-sqlite3, python3-cryptography, python3-pycryptodome, python3-requests, python3-urllib3, python3-aiohttp, python3-pillow, python3-multiprocessing, python3-protobuf, python3-ctypes, ffmpeg, curl, ca-certificates
+Suggests: wireguard-tools, openvpn, iptables
+Source: https://github.com/akeyx/canalplus-connect
+Filename: enigma2-plugin-extensions-canalplus-connect_1.2.28-atv76_cortexa15hf-neon-vfpv4.ipk
+Size: 1902366
+MD5Sum: e1f54381ae4b7b8885e97af5916c8ea6
+SHA256: dd68462ea8c00a4f8b67892d3926e8206d863bb7d116a5bd7706bbc242e0f66a
+
+Package: enigma2-plugin-extensions-canalplus-connect
 Version: 1.2.3-atv76
 Description: Canal+ Online Native Enigma2 Plugin and Streaming Gateway with Hardware DRM (OpenATV 7.x / cortexa15hf-neon-vfpv4)
 Architecture: cortexa15hf-neon-vfpv4
