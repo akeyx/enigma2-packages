@@ -1,3 +1,20 @@
+Package: enigma2-plugin-drivers-network-usb-rtl8812au
+Version: 1:1.0.0
+Description: RTL8812AU / RTL8821AU USB WiFi driver metapackage (TP-Link Archer T2U Plus support)
+Section: openatv
+Priority: optional
+Maintainer: akeyx
+License: GPL-2.0-only
+Architecture: cortexa15hf-neon-vfpv4
+Depends: kernel-module-8812au-4.1.20-1.9
+Recommends: kernel-module-8812au-4.1.20-1.9
+Replaces: enigma2-plugin-drivers-network-usb-rtl8812au
+Source: https://github.com/akeyx/enigma2-driver-rtl8812au
+Filename: enigma2-plugin-drivers-network-usb-rtl8812au_1.0.0_cortexa15hf-neon-vfpv4.ipk
+Size: 714
+MD5Sum: 690c66bf4cd5fcb445dceebfff8accaa
+SHA256: 7c917096deaa80dbde33b6edf838f8bedc221981ce52bdd14058131245d9afdd
+
 Package: enigma2-plugin-extensions-canalplus-connect
 Version: 1.1.0-atv76
 Description: Canal+ Online Native Enigma2 Plugin and Streaming Gateway with Hardware DRM (OpenATV 7.x / cortexa15hf-neon-vfpv4)
@@ -567,3 +584,20 @@ Filename: enigma2-plugin-extensions-canalplus-connect_1.2.9-atv76_cortexa15hf-ne
 Size: 1736386
 MD5Sum: 0013bcf96c5dc3223a277b3c150b42f5
 SHA256: 4d544d27bbd058c820348f202b6ac00f6a7aeb422d4ca104bf9660004910e8d1
+
+Package: kernel-module-8812au-4.1.20-1.9
+Version: 1:1.0.0
+Description: Patched 8812au kernel module with TP-Link Archer T2U Plus (2357:0120) fix and UK regulatory domain
+Section: kernel/modules
+Priority: optional
+Maintainer: akeyx
+License: GPL-2.0-only
+Architecture: cortexa15hf-neon-vfpv4
+Depends: kernel-4.1.20-1.9
+Provides: kernel-module-8812au, rt8812au
+Replaces: kernel-module-8812au-4.1.20-1.9, rt8812au
+Source: https://github.com/akeyx/enigma2-driver-rtl8812au
+Filename: kernel-module-8812au-4.1.20-1.9_1.0.0_cortexa15hf-neon-vfpv4.ipk
+Size: 625436
+MD5Sum: a3381dd01fa522296acc4ab52940a417
+SHA256: 485860f264252a28ca669387fe3a65f5efc417da2e551ebd80928c473e2bfa3c
